@@ -19,13 +19,16 @@ function render(board) {
   board.flat().forEach((value, index) => {
     const cell = cells[index];
 
-    // reseta visual da célula
-    cell.className = 'field-cell';
-    cell.textContent = '';
+    // remove apenas classes de valor
+    cell.classList.forEach((cls) => {
+      if (cls.startsWith('field-cell--')) {
+        cell.classList.remove(cls);
+      }
+    });
 
-    // renderiza número e classe quando tiver valor
+    cell.textContent = value === 0 ? '' : value;
+
     if (value > 0) {
-      cell.textContent = value;
       cell.classList.add(`field-cell--${value}`);
     }
   });
@@ -54,22 +57,26 @@ function renderStatus() {
 
 /* ========= RENDER DO BOTÃO ========= */
 function renderButton() {
+  const button = document.querySelector('.button');
   const stats = game.getStatus();
 
-  if (stats === 'lose' || stats === 'win') {
-    startButton.textContent = 'Reset';
+  // limpa estados
+  button.classList.remove('start', 'restart');
+
+  if (stats === 'idle') {
+    button.textContent = 'Start';
+    button.classList.add('start');
   } else {
-    startButton.textContent = 'Start';
+    button.textContent = 'Restart';
+    button.classList.add('restart');
   }
 }
 
 /* ========= CLICK NO BOTÃO ========= */
 startButton.addEventListener('click', () => {
-  const stats = game.getStatus();
-
-  if (stats === 'idle') {
+  if (game.getStatus() === 'idle') {
     game.start();
-  } else if (stats === 'lose' || stats === 'win') {
+  } else {
     game.restart();
   }
 
@@ -77,6 +84,7 @@ startButton.addEventListener('click', () => {
   renderStatus();
   renderButton();
 });
+
 
 /* ========= CONTROLES DO TECLADO ========= */
 document.addEventListener('keydown', (thisEvent) => {

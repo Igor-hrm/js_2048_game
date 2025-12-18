@@ -230,18 +230,20 @@ export default class Game {
   /**
    * Starts the game.
    */
+
   start() {
     // Cria a matriz do jogo
-    this.state = Array.from({ length: 4 }, () =>
-      Array.from({ length: 4 }, () => 0),
-    );
+    const isBoardEmpty = this.state.flat().every((cell) => cell === 0);
     // AQui vai zerar os pontos e mudar o status
-    this.score = 0;
-    this.status = 'playing';
 
+    this.status = 'playing';
+    this.score = 0;
     // Adiciona os primeiros 2 digitos
-    this.addRandomTile();
-    this.addRandomTile();
+
+    if (isBoardEmpty) {
+      this.addRandomTile();
+      this.addRandomTile();
+    }
   }
 
   restart() {
